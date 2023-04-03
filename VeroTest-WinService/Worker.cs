@@ -34,7 +34,8 @@ public class Worker : BackgroundService
 
         while (!stoppingToken.IsCancellationRequested)
         {
-            await Task.Delay(100, stoppingToken);
+            Log.Text("Delay...");
+            await Task.Delay(10, stoppingToken);
             if(count > 500) {
                 count = 0;
                 Log.Text("Working ExecuteAsync...");
@@ -52,7 +53,7 @@ public class Worker : BackgroundService
     public override async Task<Task> StopAsync(CancellationToken cancellationToken) {
         _logger.LogInformation("Worker StopAsync at: {time}", DateTimeOffset.Now);
         Log.Text("StopAsync...");
-        //await Log.SaveCurrentLog();
+        await Log.SaveCurrentLog();
         return base.StopAsync(cancellationToken);
     }
 
