@@ -28,19 +28,31 @@ public class Worker : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
+        int count = 0;
         Log.Text("Start of ExecuteAsync...");
+        _logger.LogInformation("Start of ExecuteAsync: {time}", DateTimeOffset.Now);
+
         while (!stoppingToken.IsCancellationRequested)
         {
-            _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
-            await Task.Delay(10000, stoppingToken);
+            await Task.Delay(100, stoppingToken);
+            if(count > 500) {
+                count = 0;
+                Log.Text("Working ExecuteAsync...");
+                _logger.LogInformation("Working ExecuteAsync: {time}", DateTimeOffset.Now);
+            }
+            count++;
         }
+
+        _logger.LogInformation("End of ExecuteAsync: {time}", DateTimeOffset.Now);
         Log.Text("End of ExecuteAsync...");
+        await Log.SaveCurrentLog();
+
     }
 
     public override async Task<Task> StopAsync(CancellationToken cancellationToken) {
         _logger.LogInformation("Worker StopAsync at: {time}", DateTimeOffset.Now);
         Log.Text("StopAsync...");
-        await Log.SaveCurrentLog();
+        //await Log.SaveCurrentLog();
         return base.StopAsync(cancellationToken);
     }
 
